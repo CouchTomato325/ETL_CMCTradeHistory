@@ -2,16 +2,17 @@ import os
 import pandas as pd
 from collections import deque
 
-def RemoveAllEmptyCols(Df) -> pd.Series:
+def RemoveAllEmptyCols(Df) -> pd.DataFrame:
    ColsToRemove = []
 
    for i in range(Df.shape[1]):
-      if sum(pd.isna(Df.iloc[:, i])) == Df.shape[0]:
+      IsAllNA = sum(map(lambda x: not x, pd.isna(Df.iloc[:, i]))) == 0
+      if IsAllNA:
          ColsToRemove += [Df.columns[i]]
 
    Df = Df.drop(ColsToRemove, axis=1)
 
-   return pd.Series(ColsToRemove, dtype=pd.StringDtype())
+   return Df
 
 def GetRelatedTransactions(Df: pd.DataFrame) -> pd.DataFrame:
    # TO DO: Write Code to logically group together transactions
