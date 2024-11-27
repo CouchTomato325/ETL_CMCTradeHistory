@@ -73,6 +73,7 @@ CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace(',', '')
 CMCCleanedData['Price'] = CMCCleanedData['Price'].str.strip()
 
 CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
- 
-for TransactionId in CMCCleanedData['TransactionId'].unique():
-    WriteTransactionsToCsv(os.path.join(INTERMEDIATEDATADIR, 'Transactions'), CMCCleanedData, TransactionId)
+
+# Write Out Transactions Separately Here To Analyse The Items Individually
+# for TransactionId in CMCCleanedData['TransactionId'].unique():
+#     WriteTransactionsToCsv(os.path.join(INTERMEDIATEDATADIR, 'Transactions'), CMCCleanedData, TransactionId)
