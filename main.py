@@ -7,8 +7,8 @@ from scripts.StageData import *
 # Config Constants
 DATADIR: Final[str] = os.path.join('.','data')
 RAWDATADIR: Final[str] = os.path.join(DATADIR, 'raw')
+INTERMEDIATEDATADIR: Final[str] = os.path.join(DATADIR, 'intermediate')
 PROCESSEDDATADIR: Final[str] = os.path.join(DATADIR, 'processed')
-CLEANEDDATADIR: Final[str] = os.path.join(DATADIR, 'cleaned')
 
 EXTRACTNAME: Final[str] = '20517797 16NOV2024.csv'
 TIMEZONE: Final[ZoneInfo] = ZoneInfo('Pacific/Auckland')
