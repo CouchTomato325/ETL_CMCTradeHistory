@@ -64,8 +64,7 @@ CMCStagedData.columns = COLNAMES
 TransactionGroupingDf = GetRelatedTransactions(CMCStagedData, \
                                                'OrderId', 'RelOrderId', 'TradeId')
 
-# TO DO: Create a grouping for related orders
-# TransactionGroupingDf = GetRelatedTransactions(CMCStagedData)
+CMCStagedData = pd.merge(TransactionGroupingDf, CMCStagedData, how='left')
 
 CMCStagedData.SetDataTypes(COLDATATYPES)
  
