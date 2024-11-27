@@ -66,7 +66,7 @@ TransactionGroupingDf = GetRelatedTransactions(CMCStagedData, \
 
 CMCStagedData = pd.merge(TransactionGroupingDf, CMCStagedData, how='left')
 
-CMCStagedData.SetDataTypes(COLDATATYPES)
+CMCStagedData = CMCStagedData.astype(COLDATATYPES)
  
 # for TransactionId in TransactionGroupingDf['TransactionId']:
 #     WriteTransactionsToCsv(TransactionId)
