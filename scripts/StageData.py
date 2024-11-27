@@ -14,9 +14,19 @@ def RemoveAllEmptyCols(Df) -> pd.DataFrame:
 
    return Df
 
-def GetRelatedTransactions(Df: pd.DataFrame) -> pd.DataFrame:
-   # TO DO: Write Code to logically group together transactions
-   pass
+def GetRelatedTransactions(Df: pd.DataFrame, OrderId: str, \
+                           RelOrderId: str, TradeId: str) -> pd.DataFrame:
+   GroupedDf = Df.loc[:, [OrderId, RelOrderId, TradeId]] \
+      .drop_duplicates(subset=[OrderId, RelOrderId, TradeId]) \
+      .reset_index(drop=True)
+   
+   GroupedDf['TransactionId'] = GroupedDf.groupby([OrderId]).ngroup(ascending=False)
+   GroupedDf['TransactionId'] = GroupedDf['TransactionId'].astype(pd.StringDtype())
+   GroupedDf['TransactionId'] = pd.Series(map(lambda x: 'T' + x.zfill(7), GroupedDf['TransactionId']))
+
+   GroupedDf = GroupedDf.loc[:, ['TransactionId', OrderId, RelOrderId, TradeId]]
+
+   return GroupedDf
 
    
 def WriteTransactionsToCsv(Df: pd.DataFrame, TransactionId: str):

@@ -60,7 +60,9 @@ CMCStagedData = CMCStagedData \
      .astype(pd.StringDtype())
 
 CMCStagedData.columns = COLNAMES
-CMCStagedData = CMCStagedData.astype(pd.StringDtype())
+
+TransactionGroupingDf = GetRelatedTransactions(CMCStagedData, \
+                                               'OrderId', 'RelOrderId', 'TradeId')
 
 # TO DO: Create a grouping for related orders
 # TransactionGroupingDf = GetRelatedTransactions(CMCStagedData)
