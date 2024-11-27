@@ -68,5 +68,5 @@ CMCStagedData = pd.merge(TransactionGroupingDf, CMCStagedData, how='left')
 
 CMCStagedData = CMCStagedData.astype(COLDATATYPES)
  
-# for TransactionId in TransactionGroupingDf['TransactionId']:
-#     WriteTransactionsToCsv(TransactionId)
+for TransactionId in CMCStagedData['TransactionId'].unique():
+    WriteTransactionsToCsv(PROCESSEDDATADIR, CMCStagedData, TransactionId)

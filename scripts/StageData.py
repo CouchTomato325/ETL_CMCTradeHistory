@@ -29,6 +29,5 @@ def GetRelatedTransactions(Df: pd.DataFrame, OrderId: str, \
    return GroupedDf
 
    
-def WriteTransactionsToCsv(Df: pd.DataFrame, TransactionId: str):
-   # TO DO: Write Code to write out those grouped transactions (in their respective groups) to analyse further
-   pass
+def WriteTransactionsToCsv(OutputDir: str, Df: pd.DataFrame, TransactionId: str):
+   Df.loc[TransactionId==Df['TransactionId'], :].to_csv(os.path.join(OutputDir, 'Transactions', TransactionId + '.csv'))
