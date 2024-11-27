@@ -2,13 +2,13 @@ import os
 import pandas as pd
 from zoneinfo import ZoneInfo
 from typing import Final
-from scripts.StageData import *
+from scripts.CleanData import *
 
 # Config Constants
 DATADIR: Final[str] = os.path.join('.','data')
 RAWDATADIR: Final[str] = os.path.join(DATADIR, 'raw')
+INTERMEDIATEDATADIR: Final[str] = os.path.join(DATADIR, 'intermediate')
 PROCESSEDDATADIR: Final[str] = os.path.join(DATADIR, 'processed')
-CLEANEDDATADIR: Final[str] = os.path.join(DATADIR, 'cleaned')
 
 EXTRACTNAME: Final[str] = '20517797 16NOV2024.csv'
 TIMEZONE: Final[ZoneInfo] = ZoneInfo('Pacific/Auckland')
@@ -30,7 +30,7 @@ COLDATATYPES: Final[dict] = {
      'RelOrderId' : 'string',
      'Product' : 'string',
      'Units/Amt' : 'string',
-     'Price' : 'string',
+     'Price' : pd.Float64Dtype(),
      'BoundaryPrice' : 'string',
      'StopLoss' : 'string',
      'TakeProfit' : 'string',
@@ -52,18 +52,28 @@ COLDATATYPES: Final[dict] = {
 RAWDATA: Final[pd.DataFrame] = pd.read_csv(os.path.join(RAWDATADIR,EXTRACTNAME))
 
 # Code Begins Here
-CMCStagedData: pd.DataFrame = RAWDATA
+CMCCleanedData: pd.DataFrame = RAWDATA
 
-CMCStagedData = CMCStagedData.replace('-', pd.NA)
-CMCStagedData = RemoveAllEmptyCols(CMCStagedData)
+CMCCleanedData = CMCCleanedData \
+     .replace('-', pd.NA) \
+     .pipe(RemoveAllEmptyCols) \
+     .astype(pd.StringDtype())
 
-CMCStagedData.columns = COLNAMES
-CMCStagedData = CMCStagedData.astype(pd.StringDtype())
+CMCCleanedData.columns = COLNAMES
 
-# TO DO: Create a grouping for related orders
-# TransactionGroupingDf = GetRelatedTransactions(CMCStagedData)
+TransactionGroupingDf = GetRelatedTransactions(CMCCleanedData, \
+                                               'OrderId', 'RelOrderId', 'TradeId')
 
-CMCStagedData.SetDataTypes(COLDATATYPES)
- 
-# for TransactionId in TransactionGroupingDf['TransactionId']:
-#     WriteTransactionsToCsv(TransactionId)
+CMCCleanedData = pd.merge(TransactionGroupingDf, CMCCleanedData, how='left')
+
+CMCCleanedData['Contains (B) Tag'] = CMCCleanedData['Price'].str.contains(r'^\(B\)')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].replace('(B) -', pd.NA)
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace('(B)', '')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace(',', '')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.strip()
+
+CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
+
+# Write Out Transactions Separately Here To Analyse The Items Individually
+# for TransactionId in CMCCleanedData['TransactionId'].unique():
+#     WriteTransactionsToCsv(os.path.join(INTERMEDIATEDATADIR, 'Transactions'), CMCCleanedData, TransactionId)
