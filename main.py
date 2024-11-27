@@ -30,7 +30,7 @@ COLDATATYPES: Final[dict] = {
      'RelOrderId' : 'string',
      'Product' : 'string',
      'Units/Amt' : 'string',
-     'Price' : 'string',
+     'Price' : pd.Float64Dtype(),
      'BoundaryPrice' : 'string',
      'StopLoss' : 'string',
      'TakeProfit' : 'string',
@@ -65,6 +65,12 @@ TransactionGroupingDf = GetRelatedTransactions(CMCCleanedData, \
                                                'OrderId', 'RelOrderId', 'TradeId')
 
 CMCCleanedData = pd.merge(TransactionGroupingDf, CMCCleanedData, how='left')
+
+CMCCleanedData['Contains (B) Tag'] = CMCCleanedData['Price'].str.contains(r'^\(B\)')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].replace('(B) -', pd.NA)
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace('(B)', '')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace(',', '')
+CMCCleanedData['Price'] = CMCCleanedData['Price'].str.strip()
 
 CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
  
