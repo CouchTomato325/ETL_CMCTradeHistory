@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from zoneinfo import ZoneInfo
 from typing import Final
-from scripts.StageData import *
+from scripts.CleanData import *
 
 # Config Constants
 DATADIR: Final[str] = os.path.join('.','data')
@@ -52,21 +52,21 @@ COLDATATYPES: Final[dict] = {
 RAWDATA: Final[pd.DataFrame] = pd.read_csv(os.path.join(RAWDATADIR,EXTRACTNAME))
 
 # Code Begins Here
-CMCStagedData: pd.DataFrame = RAWDATA
+CMCCleanedData: pd.DataFrame = RAWDATA
 
-CMCStagedData = CMCStagedData \
+CMCCleanedData = CMCCleanedData \
      .replace('-', pd.NA) \
      .pipe(RemoveAllEmptyCols) \
      .astype(pd.StringDtype())
 
-CMCStagedData.columns = COLNAMES
+CMCCleanedData.columns = COLNAMES
 
-TransactionGroupingDf = GetRelatedTransactions(CMCStagedData, \
+TransactionGroupingDf = GetRelatedTransactions(CMCCleanedData, \
                                                'OrderId', 'RelOrderId', 'TradeId')
 
-CMCStagedData = pd.merge(TransactionGroupingDf, CMCStagedData, how='left')
+CMCCleanedData = pd.merge(TransactionGroupingDf, CMCCleanedData, how='left')
 
-CMCStagedData = CMCStagedData.astype(COLDATATYPES)
+CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
  
-for TransactionId in CMCStagedData['TransactionId'].unique():
-    WriteTransactionsToCsv(PROCESSEDDATADIR, CMCStagedData, TransactionId)
+for TransactionId in CMCCleanedData['TransactionId'].unique():
+    WriteTransactionsToCsv(PROCESSEDDATADIR, CMCCleanedData, TransactionId)
