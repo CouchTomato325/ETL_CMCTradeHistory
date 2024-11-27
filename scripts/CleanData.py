@@ -30,4 +30,4 @@ def GetRelatedTransactions(Df: pd.DataFrame, OrderId: str, \
 
    
 def WriteTransactionsToCsv(OutputDir: str, Df: pd.DataFrame, TransactionId: str):
-   Df.loc[TransactionId==Df['TransactionId'], :].to_csv(os.path.join(OutputDir, 'Transactions', TransactionId + '.csv'))
+   Df.loc[TransactionId==Df['TransactionId'], :].to_csv(os.path.join(OutputDir, TransactionId + '.csv'))

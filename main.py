@@ -69,4 +69,4 @@ CMCCleanedData = pd.merge(TransactionGroupingDf, CMCCleanedData, how='left')
 CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
  
 for TransactionId in CMCCleanedData['TransactionId'].unique():
-    WriteTransactionsToCsv(PROCESSEDDATADIR, CMCCleanedData, TransactionId)
+    WriteTransactionsToCsv(os.path.join(INTERMEDIATEDATADIR, 'Transactions'), CMCCleanedData, TransactionId)
