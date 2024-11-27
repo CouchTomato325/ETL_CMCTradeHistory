@@ -54,8 +54,10 @@ RAWDATA: Final[pd.DataFrame] = pd.read_csv(os.path.join(RAWDATADIR,EXTRACTNAME))
 # Code Begins Here
 CMCStagedData: pd.DataFrame = RAWDATA
 
-CMCStagedData = CMCStagedData.replace('-', pd.NA)
-CMCStagedData = RemoveAllEmptyCols(CMCStagedData)
+CMCStagedData = CMCStagedData \
+     .replace('-', pd.NA) \
+     .pipe(RemoveAllEmptyCols) \
+     .astype(pd.StringDtype())
 
 CMCStagedData.columns = COLNAMES
 CMCStagedData = CMCStagedData.astype(pd.StringDtype())
