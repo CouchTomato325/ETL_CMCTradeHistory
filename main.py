@@ -29,7 +29,7 @@ COLDATATYPES: Final[dict] = {
      'TradeId' : 'string',
      'RelOrderId' : 'string',
      'Product' : 'string',
-     'Units/Amt' : 'string',
+     'Units/Amt' : pd.Float32Dtype(),
      'Price' : pd.Float64Dtype(),
      'BoundaryPrice' : 'string',
      'StopLoss' : 'string',
@@ -71,6 +71,11 @@ CMCCleanedData['Price'] = CMCCleanedData['Price'].replace('(B) -', pd.NA)
 CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace('(B)', '')
 CMCCleanedData['Price'] = CMCCleanedData['Price'].str.replace(',', '')
 CMCCleanedData['Price'] = CMCCleanedData['Price'].str.strip()
+
+CMCCleanedData['Units/Amt'] = CMCCleanedData['Units/Amt'].replace('Uts', pd.NA)
+CMCCleanedData['Units/Amt'] = CMCCleanedData['Units/Amt'].replace('Ut', pd.NA)
+CMCCleanedData['Units/Amt'] = CMCCleanedData['Units/Amt'].str.strip()
+
 
 CMCCleanedData = CMCCleanedData.astype(COLDATATYPES)
 
